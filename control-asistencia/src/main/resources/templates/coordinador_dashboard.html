@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de Coordinador</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin: 20px;
+      color: #333;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 800px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #007bff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .deshabilitado {
+      color: red;
+      font-weight: bold;
+    }
+
+    .habilitado {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<h1>Panel de Coordinador</h1>
+
+<div class="container">
+  <h2>Control de Acceso por Rol</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Rol</th>
+      <th>Estado Actual</th>
+      <th>Acción</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>Estudiante</td>
+      <td id="estado-estudiante">Cargando...</td>
+      <td><button onclick="toggleEstado('estudiante')">Cambiar</button></td>
+    </tr>
+    <tr>
+      <td>Profesor</td>
+      <td id="estado-profesor">Cargando...</td>
+      <td><button onclick="toggleEstado('profesor')">Cambiar</button></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="container">
+  <h2>Reporte General de Accesos</h2>
+  <button onclick="descargarReporte()">Descargar Reporte</button>
+</div>
+
+<!-- Botón para cerrar sesión -->
+<div class="container">
+  <h2>Cerrar Sesión</h2>
+  <button onclick="cerrarSesion()">Cerrar Sesión</button>
+</div>
+
+<script>
+  function obtenerEstadosLogin() {
+    ['estudiante', 'profesor'].forEach(rol => {
+      fetch(`/api/login-config/${rol}/habilitado`)
+        .then(res => res.json())
+        .then(habilitado => {
+          const estado = document.getElementById(`estado-${rol}`);
+          estado.innerText = habilitado ? 'Habilitado' : 'Deshabilitado';
+          estado.className = habilitado ? 'habilitado' : 'deshabilitado';
+        })
+        .catch(() => {
+          document.getElementById(`estado-${rol}`).innerText = 'Error';
+        });
+    });
+  }
+
+  function toggleEstado(rol) {
+    fetch(`/api/login-config/${rol}/toggle`, {
+      method: 'PUT'
+    })
+      .then(res => res.json())
+      .then(nuevoEstado => {
+        const estado = document.getElementById(`estado-${rol}`);
+        estado.innerText = nuevoEstado.loginHabilitado ? 'Habilitado' : 'Deshabilitado';
+        estado.className = nuevoEstado.loginHabilitado ? 'habilitado' : 'deshabilitado';
+      })
+      .catch(() => {
+        alert("No se pudo cambiar el estado de login.");
+      });
+  }
+
+  function descargarReporte() {
+    // En esta versión no hay accesos recientes, pero puedes ajustar aquí si tienes otros datos.
+    let texto = "Usuario,Rol,Fecha,Hora\n";
+    texto += "Datos no disponibles\n";
+
+    const blob = new Blob([texto], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "reporte_accesos.csv";
+    link.click();
+  }
+
+  function cerrarSesion() {
+    localStorage.removeItem('usuario');
+    sessionStorage.clear();
+    window.location.href = '/login';
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    obtenerEstadosLogin();
+  });
+</script>
+</body>
+</html>

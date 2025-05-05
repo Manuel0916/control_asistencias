@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel del Profesor</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #eef2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    h1, h2 {
+      color: #222;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      max-width: 750px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin: 8px 5px;
+      font-size: 16px;
+    }
+
+    select {
+      width: 70%;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px 25px;
+      font-size: 16px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #343a40;
+      color: white;
+    }
+
+    canvas, #qrcode {
+      margin-top: 15px;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      margin-top: 20px;
+      padding: 10px 25px;
+      font-size: 16px;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Panel del Profesor</h1>
+
+<!-- Registro Manual de Asistencia -->
+<section class="container">
+  <h2>Registrar Asistencia Manual</h2>
+  <form id="registro-form" class="row">
+    <input type="text" id="nombre-alumno" placeholder="Nombre del alumno" required>
+    <select id="clase-select" required>
+      <option value="" disabled selected>Selecciona una clase</option>
+      <option value="matematicas-A">Matemáticas A</option>
+      <option value="historia-B">Historia B</option>
+      <option value="quimica-C">Química C</option>
+    </select>
+    <select id="estado-asistencia">
+      <option value="Presente">Presente</option>
+      <option value="Tarde">Tarde</option>
+      <option value="Ausente">Ausente</option>
+    </select>
+    <button type="submit">Registrar</button>
+  </form>
+</section>
+
+<!-- Lista de Asistencias -->
+<div class="container">
+  <h2>Lista de Asistencias</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Clase</th>
+      <th>Fecha</th>
+      <th>Estado</th>
+    </tr>
+    </thead>
+    <tbody id="asistencias-body">
+    <!-- Filas dinámicas -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Generar QR para Clase -->
+<section class="container">
+  <h2>Generar Código QR para una Clase</h2>
+  <select id="clase-select-qr" required>
+    <option value="" disabled selected>Selecciona una clase</option>
+    <option value="matematicas-A">Matemáticas A</option>
+    <option value="historia-B">Historia B</option>
+    <option value="quimica-C">Química C</option>
+  </select>
+  <button onclick="generarQR()">Generar QR</button>
+  <div id="qr-container"></div>
+</section>
+
+<!-- Botones adicionales -->
+<section class="container">
+  <h2>Otras Opciones</h2>
+  <button onclick="alert('Función de escaneo QR próximamente')">Escanear QR</button>
+  <button onclick="generarReporte()">Descargar Reporte</button>
+</section>
+
+<!-- Botón para Cerrar Sesión -->
+<button class="logout-btn" onclick="cerrarSesion()">Cerrar Sesión</button>
+
+<script>
+  // Función para cerrar sesión
+  function cerrarSesion() {
+    // Eliminar los datos de sesión o almacenamiento local
+    localStorage.removeItem('usuarioProfesor'); // Ajusta el nombre según cómo guardes los datos de sesión
+    sessionStorage.clear(); // Si usas sessionStorage, también lo puedes limpiar
+
+    // Redirigir al usuario a la página de login (ajusta la URL según tu ruta de login)
+    window.location.href = "/login";  // Asegúrate de que esta URL sea la correcta para tu página de login
+  }
+
+  // Resto del código para registro de asistencia y generación de QR...
+
+</script>
+
+</body>
+</html>

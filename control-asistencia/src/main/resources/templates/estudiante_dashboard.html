@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel de Estudiante</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #eef1f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1, h2 {
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    .container {
+      background-color: white;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 700px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    /* Estilo para el botón de cierre de sesión */
+    #logout-button {
+      background-color: #dc3545; /* Rojo para indicar peligro o cierre */
+      margin-top: 20px;
+    }
+
+    #logout-button:hover {
+      background-color: #c82333; /* Rojo más oscuro */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #28a745;
+      color: white;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Panel de Estudiante</h1>
+
+<!-- Escáner QR -->
+<div class="container">
+  <h2>Escanear Código QR</h2>
+  <div id="reader"></div>
+  <p id="status">Esperando escaneo...</p>
+</div>
+
+<!-- Historial de asistencias -->
+<div class="container">
+  <h2>Historial de Asistencias</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Clase</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+    </tr>
+    </thead>
+    <tbody id="historial-body">
+    <!-- Registros aquí -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Botón de cierre de sesión -->
+<div class="container">
+  <button id="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
+</div>
+
+<script>
+  const historial = [];
+
+  // Función para agregar el historial al panel
+  function agregarHistorial(clase, fecha, hora) {
+    historial.push({ clase, fecha, hora });
+
+    const fila = document.createElement("tr");
+    fila.innerHTML = `<td>${clase}</td><td>${fecha}</td><td>${hora}</td>`;
+    document.getElementById("historial-body").appendChild(fila);
+  }
+
+  // Función para manejar el éxito del escaneo del QR
+  function onScanSuccess(decodedText, decodedResult) {
+    const status = document.getElementById("status");
+    const datos = decodedText.split("|");
+
+    const clase = datos[0]?.replace("Clase: ", "").trim();
+    const fecha = datos[1]?.replace("Fecha: ", "").trim();
+    const nombre = localStorage.getItem("usuarioEstudiante");  // Obtener el nombre de usuario desde localStorage
+    const hora = new Date().toLocaleString();  // Obtener la hora actual
+
+    if (clase && fecha && nombre) {
+      agregarHistorial(clase, fecha, hora);
+      status.textContent = `✅ Asistencia registrada para: ${clase} el ${fecha} a las ${hora}`;
+      status.style.color = "green";
+
+      const asistencia = {
+        clase: clase,
+        fecha: fecha,
+        hora: hora,
+        estado: "Presente",
+        nombre: nombre
+      };
+
+      // Enviar la información al backend para guardar la asistencia
+      fetch("/api/asistencias", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(asistencia)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Asistencia guardada:", data);
+        })
+        .catch(error => {
+          console.error("Error al guardar la asistencia:", error);
+        });
+
+      html5QrcodeScanner.clear();
+    } else {
+      status.textContent = "❌ Código QR inválido o usuario no identificado";
+      status.style.color = "red";
+    }
+  }
+
+  // Iniciar el escáner solo después de haber obtenido el nombre del estudiante
+  function iniciarEscaner() {
+    fetch("/api/usuario-actual")
+      .then(response => response.text())
+      .then(username => {
+        localStorage.setItem("usuarioEstudiante", username);
+
+        const html5QrcodeScanner = new Html5QrcodeScanner(
+          "reader",
+          { fps: 10, qrbox: 250 },
+          false
+        );
+        html5QrcodeScanner.render(onScanSuccess);
+      })
+      .catch(error => {
+        console.error("No se pudo obtener el usuario autenticado", error);
+        document.getElementById("status").textContent = "❌ No se pudo cargar el usuario autenticado.";
+      });
+  }
+
+  // Ejecutar al cargar la página
+  window.onload = function() {
+    iniciarEscaner();
+  };
+
+  // Función para cerrar sesión
+  function cerrarSesion() {
+    // Limpiar almacenamiento local (opcional)
+    localStorage.removeItem("usuarioEstudiante");
+
+    // Redirigir al login
+    window.location.href = "/login"; // Reemplaza con la URL de tu página de login
+  }
+</script>
+
+</body>
+</html>

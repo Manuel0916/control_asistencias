@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .register-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .register-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 8px;
+        }
+        .btn-register {
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+        }
+        .btn-register:hover {
+            background-color: #0056b3;
+        }
+        .btn-login {
+            background-color: #6c757d;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+        }
+        .btn-login:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-container">
+    <h2 class="register-title">Registro de Usuario</h2>
+    <form th:action="@{/registro}" method="post">
+        <div class="mb-3">
+            <label for="username" class="form-label">Usuario</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Ingresa tu usuario" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="Ingresa tu correo" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Ingresa tu contraseña" required>
+        </div>
+        <div class="mb-3">
+            <label for="rolNombre" class="form-label">Selecciona un rol</label>
+            <select id="rolNombre" name="rolNombre" class="form-control" required>
+                <option value="ESTUDIANTE">Estudiante</option>
+                <option value="ADMIN">Administrador</option>
+                <option value="COORDINADOR">Coordinador</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-register w-100">Registrarse</button>
+    </form>
+
+    <!-- Botón para ir al login -->
+    <div class="text-center mt-3">
+        <a href="/login" class="btn btn-login w-100">Ir al Login</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
