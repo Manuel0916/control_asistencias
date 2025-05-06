@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -84,17 +85,6 @@
       flex-direction: column;
       align-items: center;
     }
-
-    .logout-btn {
-      background-color: #dc3545;
-      margin-top: 20px;
-      padding: 10px 25px;
-      font-size: 16px;
-    }
-
-    .logout-btn:hover {
-      background-color: #c82333;
-    }
   </style>
 </head>
 <body>
@@ -159,22 +149,109 @@
   <button onclick="generarReporte()">Descargar Reporte</button>
 </section>
 
-<!-- Botón para Cerrar Sesión -->
-<button class="logout-btn" onclick="cerrarSesion()">Cerrar Sesión</button>
-
 <script>
-  // Función para cerrar sesión
-  function cerrarSesion() {
-    // Eliminar los datos de sesión o almacenamiento local
-    localStorage.removeItem('usuarioProfesor'); // Ajusta el nombre según cómo guardes los datos de sesión
-    sessionStorage.clear(); // Si usas sessionStorage, también lo puedes limpiar
+  const asistencias = [];
 
-    // Redirigir al usuario a la página de login (ajusta la URL según tu ruta de login)
-    window.location.href = "/login";  // Asegúrate de que esta URL sea la correcta para tu página de login
+  document.getElementById("registro-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const nombre = document.getElementById("nombre-alumno").value;
+    const estado = document.getElementById("estado-asistencia").value;
+    const clase = document.getElementById("clase-select").value;
+    const fecha = new Date().toLocaleString();
+
+    if (!clase) {
+      alert("Seleccione una clase.");
+      return;
+    }
+
+    const asistencia = {
+      nombre: nombre,
+      clase: clase,
+      estado: estado,
+      fecha: fecha
+    };
+
+    fetch("/api/asistencias", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(asistencia)
+    })
+    .then(res => res.ok ? res.json() : Promise.reject("Error al registrar asistencia."))
+    .then(data => {
+      alert("Asistencia registrada correctamente.");
+      agregarFila(data);
+      document.getElementById("registro-form").reset();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error al registrar asistencia.");
+    });
+  });
+
+  function agregarFila(registro) {
+    const tbody = document.getElementById("asistencias-body");
+    const fila = document.createElement("tr");
+
+    const nombre = registro.nombre || "No disponible";
+    const clase = registro.clase || "No disponible";
+    const fecha = registro.fecha || new Date().toLocaleString();
+    const estado = registro.estado || "No disponible";
+
+    fila.innerHTML = `<td>${nombre}</td><td>${clase}</td><td>${fecha}</td><td>${estado}</td>`;
+    tbody.appendChild(fila);
   }
 
-  // Resto del código para registro de asistencia y generación de QR...
+  function generarQR() {
+    const clase = document.getElementById("clase-select-qr").value;
+    const contenedor = document.getElementById("qr-container");
+    contenedor.innerHTML = "";
 
+    if (!clase) {
+      alert("Seleccione una clase para generar el QR.");
+      return;
+    }
+
+   const datosQR = `Clase: ${clase} | Fecha: ${new Date().toISOString()}`;
+
+    const canvas = document.createElement("canvas");
+    contenedor.appendChild(canvas);
+    QRCode.toCanvas(canvas, datosQR, error => {
+      if (error) console.error("Error generando QR", error);
+    });
+  }
+
+  function generarReporte() {
+    fetch("/api/asistencias")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.length) {
+          alert("No hay datos para generar el reporte.");
+          return;
+        }
+
+        let contenido = "REPORTE DE ASISTENCIAS\n\n";
+        data.forEach(a => {
+          const nombre = a.nombre || "No disponible";
+          const clase = a.clase || "No disponible";
+          const fecha = a.fecha || "No disponible";
+          const estado = a.estado || "No disponible";
+          contenido += `Nombre: ${nombre}\nClase: ${clase}\nFecha: ${fecha}\nEstado: ${estado}\n\n`;
+        });
+
+        const blob = new Blob([contenido], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "reporte_asistencias.txt";
+        link.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error generando reporte.");
+      });
+  }
 </script>
 
 </body>
