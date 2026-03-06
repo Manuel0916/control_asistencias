@@ -4,29 +4,28 @@ import com.universidad.control_asistencia.model.Rol;
 import com.universidad.control_asistencia.model.Usuario;
 import com.universidad.control_asistencia.repository.RolRepository;
 import com.universidad.control_asistencia.repository.UsuarioRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 @Controller
+@AllArgsConstructor
 public class AuthController {
 
-    private final UsuarioRepository usuarioRepository;
-    private final RolRepository rolRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    public AuthController(UsuarioRepository usuarioRepository, RolRepository rolRepository, PasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.rolRepository = rolRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private UsuarioRepository usuarioRepository;
+    private RolRepository rolRepository;
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
@@ -45,8 +44,12 @@ public class AuthController {
         return "login";
     }
 
+    // 🔐 Solo los coordinadores pueden acceder a esta vista
     @GetMapping("/registro")
-    public String registroPage(Model model) {
+    public String registroPage(Model model, Authentication authentication) {
+        if (authentication == null || !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COORDINADOR"))) {
+            return "redirect:/login?error=acceso-denegado";
+        }
         return "registro";
     }
 
@@ -55,12 +58,13 @@ public class AuthController {
                                    @RequestParam String email,
                                    @RequestParam String password,
                                    @RequestParam String rolNombre,
+                                   Authentication authentication,
                                    Model model) {
 
-        System.out.println("Intentando registrar usuario con los siguientes datos:");
-        System.out.println("Username: " + username);
-        System.out.println("Email: " + email);
-        System.out.println("Rol: " + rolNombre);
+        // Verifica si quien intenta registrar tiene permisos
+        if (authentication == null || !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COORDINADOR"))) {
+            return "redirect:/login?error=acceso-denegado";
+        }
 
         if (usuarioRepository.existsByUsername(username)) {
             model.addAttribute("error", "El nombre de usuario ya está en uso.");
@@ -89,10 +93,9 @@ public class AuthController {
 
         try {
             usuarioRepository.save(nuevoUsuario);
-            System.out.println("Usuario registrado exitosamente: " + username);
-            return "redirect:/login?registroExitoso=true";
+            model.addAttribute("success", "Usuario registrado correctamente.");
+            return "registro";
         } catch (Exception e) {
-            System.out.println("Error al registrar usuario: " + e.getMessage());
             model.addAttribute("error", "Hubo un error al registrar el usuario. Inténtalo de nuevo.");
             return "registro";
         }
@@ -114,21 +117,43 @@ public class AuthController {
         return "forgot-password";
     }
 
-    // ✅ Endpoint modificado para devolver el nombre real del usuario
+    /**
+     * ✅ ENDPOINT CORREGIDO: Devuelve información del usuario autenticado en formato JSON
+     */
     @GetMapping("/api/usuario-actual")
     @ResponseBody
-    public ResponseEntity<String> obtenerUsuarioActual(Authentication authentication) {
+    public ResponseEntity<Map<String, String>> obtenerUsuarioActual(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("No autenticado");
+            return ResponseEntity.status(401).body(Map.of("error", "No autenticado"));
         }
 
-        String email = authentication.getName(); // Spring Security usa el email como principal
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        String username = authentication.getName();
+
+        // Buscar por username primero
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByUsername(username);
+
+        // Si no encuentra por username, buscar por email
+        if (usuarioOpt.isEmpty()) {
+            usuarioOpt = usuarioRepository.findByEmail(username);
+        }
 
         if (usuarioOpt.isPresent()) {
-            return ResponseEntity.ok(usuarioOpt.get().getUsername());  // Devolver el nombre real
-        } else {
-            return ResponseEntity.status(404).body("Usuario no encontrado");
+            Usuario usuario = usuarioOpt.get();
+
+            // Obtener el primer rol (los usuarios pueden tener múltiples roles)
+            String rol = usuario.getRoles().stream()
+                    .findFirst()
+                    .map(r -> r.getNombre().replace("ROLE_", ""))
+                    .orElse("ESTUDIANTE");
+
+            Map<String, String> userInfo = new HashMap<>();
+            userInfo.put("username", usuario.getUsername());
+            userInfo.put("email", usuario.getEmail());
+            userInfo.put("rol", rol);
+
+            return ResponseEntity.ok(userInfo);
         }
+
+        return ResponseEntity.status(404).body(Map.of("error", "Usuario no encontrado"));
     }
 }

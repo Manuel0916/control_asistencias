@@ -1,28 +1,28 @@
 package com.universidad.control_asistencia.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 
-@Entity
+@Document(collection = "asistencias")
 public class Asistencia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private Long usuarioId; // Nuevo: referencia al estudiante
+    private Long usuarioId;
     private String nombre;
     private String clase;
     private String estado;
-
-    private LocalDateTime fechaHora; // Cambiar de LocalDate a LocalDateTime
+    private LocalDateTime fechaHora = LocalDateTime.now(); // Aquí se guarda la hora exacta del servidor
 
     // Getters y setters
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -33,9 +33,6 @@ public class Asistencia {
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
     }
-
-
-
 
     public String getNombre() {
         return nombre;
@@ -67,10 +64,5 @@ public class Asistencia {
 
     public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
-    }
-
-    // Método para obtener la fecha en formato String (si es necesario para el front-end)
-    public String getFechaHoraString() {
-        return fechaHora != null ? fechaHora.toString() : "No definida";
     }
 }

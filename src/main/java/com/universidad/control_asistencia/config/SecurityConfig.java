@@ -1,4 +1,4 @@
-package com.universidad.control_asistencia.security;
+package com.universidad.control_asistencia.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,10 +27,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/registro", "/css/**", "/js/**", "/img/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // 🔹 Para ADMIN
+                        .requestMatchers("/", "/login", "/forgot-password", "/css/**", "/js/**", "/img/**").permitAll()
+                        .requestMatchers("/asistencia/api/predict").permitAll()
+                        .requestMatchers("/registro").hasRole("COORDINADOR")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/coordinador/**").hasRole("COORDINADOR")
                         .requestMatchers("/estudiante/**").hasRole("ESTUDIANTE")
                         .anyRequest().authenticated()
@@ -65,7 +66,7 @@ public class SecurityConfig {
                                                 Authentication authentication) throws IOException, ServletException {
                 if (authentication.getAuthorities().stream()
                         .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-                    response.sendRedirect("/admin/dashboard"); // 🔹 Redirección a ADMIN
+                    response.sendRedirect("/admin/dashboard");
                 } else if (authentication.getAuthorities().stream()
                         .anyMatch(auth -> auth.getAuthority().equals("ROLE_COORDINADOR"))) {
                     response.sendRedirect("/coordinador/dashboard");
@@ -78,4 +79,5 @@ public class SecurityConfig {
             }
         };
     }
+
 }

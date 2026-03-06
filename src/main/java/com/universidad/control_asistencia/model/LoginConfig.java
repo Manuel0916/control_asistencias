@@ -1,4 +1,4 @@
-package com.universidad.control_asistencia.configuracion;
+package com.universidad.control_asistencia.model;
 
 import jakarta.persistence.*;
 

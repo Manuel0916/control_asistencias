@@ -39,10 +39,5 @@ public class AdminController {
         return asistenciaRepository.findByClase(nombreClase);
     }
 
-    // API REST para eliminar una asistencia por ID
-    @ResponseBody
-    @DeleteMapping("/api/asistencias/{id}")
-    public void eliminarAsistencia(@PathVariable Long id) {
-        asistenciaRepository.deleteById(id);
-    }
+
 }
