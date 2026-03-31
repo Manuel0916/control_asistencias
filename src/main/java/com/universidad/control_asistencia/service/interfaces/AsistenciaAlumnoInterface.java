@@ -1,4 +1,4 @@
-package com.universidad.control_asistencia.interfaces;
+package com.universidad.control_asistencia.service.interfaces;
 
 import com.universidad.control_asistencia.model.dto.AsistenciaAlumnoDTO;
 

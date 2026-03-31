@@ -1,6 +1,6 @@
 package com.universidad.control_asistencia.service;
 
-import com.universidad.control_asistencia.interfaces.UsuarioInterface;
+import com.universidad.control_asistencia.service.interfaces.UsuarioInterface;
 import com.universidad.control_asistencia.model.Usuario;
 import com.universidad.control_asistencia.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;

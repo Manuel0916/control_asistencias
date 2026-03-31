@@ -1,9 +1,7 @@
 package com.universidad.control_asistencia.controller;
 
-import com.universidad.control_asistencia.interfaces.HorarioClaseInterface;
+import com.universidad.control_asistencia.service.interfaces.HorarioClaseInterface;
 import com.universidad.control_asistencia.model.HorarioClase;
-import com.universidad.control_asistencia.service.HorarioClaseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

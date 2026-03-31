@@ -1,9 +1,7 @@
 package com.universidad.control_asistencia.controller;
 
-import com.universidad.control_asistencia.interfaces.AsistenciaAlumnoInterface;
+import com.universidad.control_asistencia.service.interfaces.AsistenciaAlumnoInterface;
 import com.universidad.control_asistencia.model.dto.AsistenciaAlumnoDTO;
-import com.universidad.control_asistencia.service.AsistenciaAlumnoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

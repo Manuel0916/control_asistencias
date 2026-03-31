@@ -1,8 +1,7 @@
 package com.universidad.control_asistencia.controller;
 
-import com.universidad.control_asistencia.interfaces.UsuarioInterface;
+import com.universidad.control_asistencia.service.interfaces.UsuarioInterface;
 import com.universidad.control_asistencia.model.Usuario;
-import com.universidad.control_asistencia.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

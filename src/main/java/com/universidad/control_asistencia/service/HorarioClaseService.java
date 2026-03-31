@@ -1,6 +1,6 @@
 package com.universidad.control_asistencia.service;
 
-import com.universidad.control_asistencia.interfaces.HorarioClaseInterface;
+import com.universidad.control_asistencia.service.interfaces.HorarioClaseInterface;
 import com.universidad.control_asistencia.model.HorarioClase;
 import com.universidad.control_asistencia.repository.HorarioClaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;

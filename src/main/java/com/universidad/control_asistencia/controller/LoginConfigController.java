@@ -1,6 +1,6 @@
 package com.universidad.control_asistencia.controller;
 
-import com.universidad.control_asistencia.interfaces.LoginConfigInterface;
+import com.universidad.control_asistencia.service.interfaces.LoginConfigInterface;
 import com.universidad.control_asistencia.model.LoginConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

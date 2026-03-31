@@ -1,6 +1,6 @@
 package com.universidad.control_asistencia.service;
 
-import com.universidad.control_asistencia.interfaces.LoginConfigInterface;
+import com.universidad.control_asistencia.service.interfaces.LoginConfigInterface;
 import com.universidad.control_asistencia.repository.LoginConfigRepository;
 import com.universidad.control_asistencia.model.LoginConfig;
 import lombok.AllArgsConstructor;

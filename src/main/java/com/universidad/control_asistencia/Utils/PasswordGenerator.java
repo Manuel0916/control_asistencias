@@ -1,4 +1,4 @@
-package com.universidad.control_asistencia.utils;
+package com.universidad.control_asistencia.Utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

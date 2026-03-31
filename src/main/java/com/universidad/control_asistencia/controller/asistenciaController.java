@@ -1,6 +1,6 @@
 package com.universidad.control_asistencia.controller;
 
-import com.universidad.control_asistencia.interfaces.AsistenciaInterface;
+import com.universidad.control_asistencia.service.interfaces.AsistenciaInterface;
 import com.universidad.control_asistencia.model.Asistencia;
 import com.universidad.control_asistencia.model.Usuario;
 import com.universidad.control_asistencia.repository.UsuarioRepository;

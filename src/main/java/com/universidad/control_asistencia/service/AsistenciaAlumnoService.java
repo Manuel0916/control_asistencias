@@ -1,6 +1,6 @@
 package com.universidad.control_asistencia.service;
 
-import com.universidad.control_asistencia.interfaces.AsistenciaAlumnoInterface;
+import com.universidad.control_asistencia.service.interfaces.AsistenciaAlumnoInterface;
 import com.universidad.control_asistencia.model.dto.AsistenciaAlumnoDTO;
 import org.springframework.stereotype.Service;
 import weka.classifiers.Classifier;
