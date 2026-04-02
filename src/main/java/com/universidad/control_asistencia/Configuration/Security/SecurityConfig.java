@@ -1,10 +1,15 @@
 package com.universidad.control_asistencia.Configuration.Security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +24,12 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${security.rememberme.key}")
+    private String rememberMeKey;
+
+    @Value("${security.rememberme.token-validity}")
+    private int rememberMeValidity;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -27,6 +38,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)
+                .rememberMe(remember -> remember
+                    .key(rememberMeKey)
+                    .tokenValiditySeconds(rememberMeValidity)
+                    .rememberMeParameter("remember-me")
+                    .useSecureCookie(true)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/forgot-password", "/css/**", "/js/**", "/img/**").permitAll()
                         .requestMatchers("/asistencia/api/predict").permitAll()
@@ -47,15 +65,22 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "access_token", "remember-me")
+                        .clearAuthentication(true)
                         .permitAll()
                 )
                 .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login?error=true")
                         .maximumSessions(1)
+                        .sessionRegistry(sessionRegistry())
                         .expiredUrl("/login?expired=true")
                 );
-
         return http.build();
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 
     @Bean
@@ -74,7 +99,7 @@ public class SecurityConfig {
                         .anyMatch(auth -> auth.getAuthority().equals("ROLE_ESTUDIANTE"))) {
                     response.sendRedirect("/estudiante/dashboard");
                 } else {
-                    response.sendRedirect("/login?error=sin-rol");
+                    response.sendRedirect("/login?error");
                 }
             }
         };
