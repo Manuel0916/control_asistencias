@@ -20,20 +20,19 @@ public class IAService {
 
     public String preguntar(String mensaje) {
         try {
+            if (mensaje == null || mensaje.isBlank()) {
+                return "Escribe algo por favor.";
+            }
+
             String respuesta = chatClient
                     .prompt()
-                    .user(
-                            mensaje.strip()
-                                    .replaceAll("\\s+", " ")
-                    )
+                    .user(mensaje.strip().replaceAll("\\s+", " "))
                     .call()
                     .content();
 
-            if (respuesta == null || respuesta.isBlank()) {
-                return mensajeNegacion;
-            }
-
-            return respuesta;
+            return (respuesta == null || respuesta.isBlank())
+                    ? mensajeNegacion
+                    : respuesta;
 
         } catch (Exception e) {
             return "Error al conectar con la IA";

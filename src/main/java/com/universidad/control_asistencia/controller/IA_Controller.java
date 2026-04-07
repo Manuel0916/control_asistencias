@@ -8,10 +8,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/ia")
-@AllArgsConstructor
 public class IA_Controller {
 
     private final IAService iaService;
+
+    public IA_Controller(IAService iaService) {
+        this.iaService = iaService;
+    }
 
     @PostMapping("/chat")
     public ResponseEntity<Map<String, String>> chat(@RequestBody Map<String, String> request) {
