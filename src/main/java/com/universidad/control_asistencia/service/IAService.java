@@ -9,7 +9,7 @@ public class IAService {
 
     private final ChatClient chatClient;
     private final String mensajeNegacion;
-    
+
     public IAService(
             ChatClient chatClient,
             @Value("${app.ai.negacion}") String mensajeNegacion
