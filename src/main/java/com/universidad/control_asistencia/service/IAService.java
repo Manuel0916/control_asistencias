@@ -1,6 +1,5 @@
 package com.universidad.control_asistencia.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,9 +8,8 @@ import org.springframework.stereotype.Service;
 public class IAService {
 
     private final ChatClient chatClient;
-
     private final String mensajeNegacion;
-
+    
     public IAService(
             ChatClient chatClient,
             @Value("${app.ai.negacion}") String mensajeNegacion
