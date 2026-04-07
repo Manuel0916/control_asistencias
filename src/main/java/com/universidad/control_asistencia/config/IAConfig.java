@@ -1,7 +1,9 @@
 package com.universidad.control_asistencia.config;
 
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.ollama.OllamaChatClient;
+import org.springframework.ai.ollama.api.OllamaApi;
+import org.springframework.ai.ollama.api.OllamaOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,11 +47,19 @@ public class IAConfig {
             - Mantén un tono profesional y amigable.
             """;
 
+    @Value("${spring.ai.ollama.base-url}")
+    private String baseUrl;
+
+    @Value("${spring.ai.ollama.chat.options.model}")
+    private String model;
+
     @Bean
-    public ChatClient chatClient(ChatClient.Builder builder) {
-        return builder
-                .defaultSystem(SYSTEM_PROMPT)
-                .defaultAdvisors(new SimpleLoggerAdvisor())
-                .build();
+    public OllamaChatClient ollamaChatClient() {
+        OllamaApi ollamaApi = new OllamaApi(baseUrl);
+        OllamaOptions options = OllamaOptions.create()
+                .withModel(model);
+
+        return new OllamaChatClient(ollamaApi)
+                .withDefaultOptions(options);
     }
 }

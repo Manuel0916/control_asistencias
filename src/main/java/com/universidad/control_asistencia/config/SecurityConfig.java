@@ -9,10 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 @Configuration
@@ -27,13 +27,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/ia/chat", "/ia/**")  // ← Agrega esta línea
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/forgot-password", "/css/**", "/js/**", "/img/**").permitAll()
                         .requestMatchers("/asistencia/api/predict").permitAll()
                         .requestMatchers("/registro").hasRole("COORDINADOR")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/ia/chat").permitAll()
-                        .requestMatchers("/ia/**").permitAll()
+                        .requestMatchers("/ia/chat", "/ia/**").permitAll()  // ← Ya la tienes
                         .requestMatchers("/coordinador/**").hasRole("COORDINADOR")
                         .requestMatchers("/estudiante/**").hasRole("ESTUDIANTE")
                         .anyRequest().authenticated()
@@ -81,5 +83,4 @@ public class SecurityConfig {
             }
         };
     }
-
 }

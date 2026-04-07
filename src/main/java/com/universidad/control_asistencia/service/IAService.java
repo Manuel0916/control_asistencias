@@ -1,17 +1,17 @@
 package com.universidad.control_asistencia.service;
 
-import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.ollama.OllamaChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IAService {
 
-    private final ChatClient chatClient;
+    private final OllamaChatClient chatClient;
     private final String mensajeNegacion;
 
     public IAService(
-            ChatClient chatClient,
+            OllamaChatClient chatClient,
             @Value("${app.ai.negacion}") String mensajeNegacion
     ) {
         this.chatClient = chatClient;
@@ -21,22 +21,22 @@ public class IAService {
     public String preguntar(String mensaje) {
         try {
             if (mensaje == null || mensaje.isBlank()) {
-                return "Escribe algo por favor.";
+                return "Por favor, escribe un mensaje válido.";
             }
 
-            String respuesta = chatClient
-                    .prompt()
-                    .user(mensaje.strip().replaceAll("\\s+", " "))
-                    .call()
-                    .content();
+            String mensajeLimpio = mensaje.strip().replaceAll("\\s+", " ");
 
-            return (respuesta == null || respuesta.isBlank())
-                    ? mensajeNegacion
-                    : respuesta;
+            String respuesta = chatClient.call(mensajeLimpio);
+
+            if (respuesta == null || respuesta.isBlank()) {
+                return mensajeNegacion;
+            }
+
+            return respuesta;
 
         } catch (Exception e) {
-            return "Error al conectar con la IA";
+            e.printStackTrace();
+            return "❌ Error al conectar con la IA local (Ollama). Verifica que Ollama esté corriendo en http://localhost:11434";
         }
     }
-
 }

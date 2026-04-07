@@ -1,7 +1,6 @@
 package com.universidad.control_asistencia.controller;
 
 import com.universidad.control_asistencia.service.IAService;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -23,7 +22,7 @@ public class IA_Controller {
 
         if (mensaje == null || mensaje.isBlank()) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("response", "Mensaje vacío"));
+                    .body(Map.of("response", "❌ El mensaje no puede estar vacío"));
         }
 
         String respuesta = iaService.preguntar(mensaje);
