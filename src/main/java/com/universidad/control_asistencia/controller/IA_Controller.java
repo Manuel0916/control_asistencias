@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/ia")
 @RequiredArgsConstructor
 public class IA_Controller {
 
@@ -18,9 +18,8 @@ public class IA_Controller {
             @RequestBody Map<String, String> body) {
 
         String mensaje = body.get("message");
-        String chatId = body.getOrDefault("chatId", "default");
 
-        String respuesta = iaService.preguntar(mensaje, chatId);
+        String respuesta = iaService.preguntar(mensaje);
 
         return ResponseEntity.ok(Map.of("response", respuesta));
     }

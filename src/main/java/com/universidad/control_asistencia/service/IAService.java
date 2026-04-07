@@ -1,22 +1,25 @@
 package com.universidad.control_asistencia.service;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class IAService {
 
-    private ChatClient chatClient;
+    private final ChatClient chatClient;
+    private final String mensajeNegacion;
 
-    @Value("${app.ai.negacion}")
-    private String mensajeNegacion;
+    public IAService(
+            ChatClient chatClient,
+            @Value("${app.ai.negacion}") String mensajeNegacion
+    ) {
+        this.chatClient = chatClient;
+        this.mensajeNegacion = mensajeNegacion;
+    }
 
 
-    public String preguntar(String mensaje, String chatId) {
+    public String preguntar(String mensaje) {
         try {
             String respuesta = chatClient
                     .prompt()
