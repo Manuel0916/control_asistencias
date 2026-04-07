@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers("/asistencia/api/predict").permitAll()
                         .requestMatchers("/registro").hasRole("COORDINADOR")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/ia/chat").permitAll()
+                        .requestMatchers("/ia/**").permitAll()
                         .requestMatchers("/coordinador/**").hasRole("COORDINADOR")
                         .requestMatchers("/estudiante/**").hasRole("ESTUDIANTE")
                         .anyRequest().authenticated()
