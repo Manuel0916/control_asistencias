@@ -1,5 +1,5 @@
 // ── Configuración ──────────────────────────────────────────────
-const API_URL = "/api/chat"; // ← endpoint de Spring AI
+const API_URL = "/ia/chat"; // ← endpoint de Spring AI
 
 // ── Referencias DOM ────────────────────────────────────────────
 const chatBody = document.getElementById("chatBody");
