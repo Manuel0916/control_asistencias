@@ -6,13 +6,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class IAService {
 
     private final ChatClient chatClient;
 
-    @Value("${app.ai.negacion}")
-    private String mensajeNegacion;
+    private final String mensajeNegacion;
+
+    public IAService(
+            ChatClient chatClient,
+            @Value("${app.ai.negacion}") String mensajeNegacion
+    ) {
+        this.chatClient = chatClient;
+        this.mensajeNegacion = mensajeNegacion;
+    }
 
     public String preguntar(String mensaje) {
         try {
@@ -35,4 +41,5 @@ public class IAService {
             return "Error al conectar con la IA";
         }
     }
+
 }
