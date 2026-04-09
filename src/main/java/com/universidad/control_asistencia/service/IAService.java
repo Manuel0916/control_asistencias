@@ -1,7 +1,6 @@
 package com.universidad.control_asistencia.service;
 
-
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -9,22 +8,29 @@ import org.springframework.stereotype.Service;
 public class IAService {
 
     private final ChatClient chatClient;
-    private final String mensajeNegacion;
 
-    private static final String SYSTEM_PROMPT = """
-            Eres un asistente virtual del sistema de control de asistencia de una universidad llamada "AsistControl".
-            Solo respondes preguntas sobre: registro de asistencia, consulta de asistencias, horarios, materias, reportes.
-            Si te preguntan algo fuera de esto, responde: "Lo siento, solo puedo ayudarte con el sistema de control de asistencia."
-            Responde de forma clara, breve y útil.
-            """;
+    @Value("${app.ai.negacion}")
+    private String mensajeNegacion;
 
-    public IAService(
-            ChatClient chatClient,
-            @Value("${app.ai.negacion}") String mensajeNegacion
-    ) {
+    // Contructor por defecto
+    public IAService(ChatClient chatClient) {
         this.chatClient = chatClient;
-        this.mensajeNegacion = mensajeNegacion;
     }
 
+    public String OllamaAsk(String mensaje, String chatId) {
+        try {
+            String respuesta = chatClient
+                    .prompt()
+                    .user(mensaje)
+                    .call()
+                    .content();
+            if (respuesta == null || respuesta.isBlank()) {
+                return mensajeNegacion;
+            }
+            return respuesta;
+        } catch (Exception e) {
+            return "Error al conectar con la IA. Intenta nuevamente.";
+        }
+    }
 
 }
