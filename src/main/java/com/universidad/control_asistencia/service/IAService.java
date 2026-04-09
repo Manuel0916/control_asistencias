@@ -17,7 +17,7 @@ public class IAService {
         this.chatClient = chatClient;
     }
 
-    public String OllamaAsk(String mensaje, String chatId) {
+    public String OllamaAsk(String mensaje) {
         try {
             String respuesta = chatClient
                     .prompt()
