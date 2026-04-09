@@ -55,7 +55,7 @@
             scroll-behavior: smooth;
         }
 
-        /* FONDO ANIMADO PROFESIONAL */
+        /* FONDO ANIMADO */
         .background-animation {
             position: fixed;
             top: 0;
@@ -111,18 +111,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) rotate(0deg);
-            }
-            33% {
-                transform: translateY(-30px) rotate(120deg);
-            }
-            66% {
-                transform: translateY(30px) rotate(240deg);
-            }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(30px) rotate(240deg); }
         }
 
-        /* NAVBAR MEJORADO */
+        /* NAVBAR */
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -159,10 +153,6 @@
             transition: all 0.3s ease;
             background: var(--gradient-primary);
             padding: 5px;
-        }
-
-        .navbar-logo:hover {
-            transform: scale(1.05) rotate(5deg);
         }
 
         .nav-link {
@@ -211,27 +201,12 @@
             overflow: hidden;
         }
 
-        .btn-login::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-login:hover::before {
-            left: 100%;
-        }
-
         .btn-login:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 35px rgba(79, 123, 255, 0.4);
         }
 
-        /* HERO SECTION MEJORADA */
+        /* HERO SECTION */
         .hero-section {
             min-height: 100vh;
             display: flex;
@@ -239,11 +214,6 @@
             position: relative;
             padding: 120px 0 80px;
             background: transparent;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
         }
 
         .hero-title {
@@ -277,10 +247,6 @@
             margin: 3rem 0;
         }
 
-        .stat-item {
-            text-align: center;
-        }
-
         .stat-number {
             font-size: 2rem;
             font-weight: 800;
@@ -306,8 +272,6 @@
             font-size: 1.1rem;
             transition: all 0.4s ease;
             box-shadow: 0 15px 35px rgba(79, 123, 255, 0.3);
-            position: relative;
-            overflow: hidden;
         }
 
         .btn-hero-primary:hover {
@@ -332,34 +296,10 @@
             transform: translateY(-2px);
         }
 
-        .hero-image-container {
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .hero-dashboard {
-            border-radius: 20px;
-            box-shadow: var(--card-shadow);
-            transition: all 0.5s ease;
-            position: relative;
-            z-index: 2;
-            background: white;
-            padding: 15px;
-            transform-style: preserve-3d;
-            max-width: 100%;
-            height: auto;
-        }
-
-        .hero-dashboard:hover {
-            transform: rotateY(5deg) rotateX(5deg) scale(1.02);
-            box-shadow: var(--card-shadow-hover);
-        }
-
         /* FEATURES SECTION */
         .features-section {
             padding: 100px 0;
             background: white;
-            position: relative;
         }
 
         .section-header {
@@ -433,7 +373,6 @@
             font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 1rem;
-            color: var(--text-dark);
         }
 
         /* ROLES SECTION */
@@ -497,7 +436,6 @@
             margin-bottom: 1rem;
             position: relative;
             z-index: 2;
-            color: var(--text-dark);
         }
 
         .role-description {
@@ -506,24 +444,12 @@
             z-index: 2;
         }
 
-        /* ========== ASISTENTE IA REDISEÑADO ========== */
+        /* ASISTENTE IA */
         .ai-assistant-section {
             padding: 100px 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             position: relative;
             overflow: hidden;
-        }
-
-        .ai-assistant-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-            background-size: cover;
-            opacity: 0.15;
         }
 
         .assistant-card {
@@ -539,7 +465,6 @@
 
         .assistant-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
         }
 
         .assistant-header {
@@ -573,11 +498,6 @@
             font-weight: 800;
             margin-bottom: 0.5rem;
             font-size: 1.8rem;
-        }
-
-        .assistant-header p {
-            opacity: 0.9;
-            margin: 0;
         }
 
         .online-status {
@@ -617,14 +537,8 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .message.user {
@@ -691,13 +605,8 @@
             animation: typing 1.4s infinite;
         }
 
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes typing {
             0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
@@ -781,8 +690,6 @@
             background: var(--gradient-dark);
             color: white;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
 
         .cta-title {
@@ -814,7 +721,6 @@
 
         .btn-cta:hover {
             transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
             color: white;
         }
 
@@ -825,10 +731,6 @@
             padding: 4rem 0 2rem;
         }
 
-        .footer-content {
-            text-align: center;
-        }
-
         .footer-logo {
             font-weight: 800;
             font-size: 2rem;
@@ -836,9 +738,11 @@
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-align: center;
         }
 
         .footer-text {
+            text-align: center;
             opacity: 0.8;
             margin-bottom: 2rem;
         }
@@ -868,65 +772,21 @@
         .stagger-delay-3 { transition-delay: 0.3s; }
         .stagger-delay-4 { transition-delay: 0.4s; }
 
-        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .hero-stats {
-                justify-content: center;
-                gap: 1.5rem;
-            }
-
-            .stat-number {
-                font-size: 1.5rem;
-            }
-
-            .section-title {
-                font-size: 2.5rem;
-            }
-
-            .hero-buttons {
-                text-align: center;
-            }
-
-            .btn-hero-primary,
-            .btn-hero-secondary {
-                width: 100%;
-                margin-bottom: 1rem;
-            }
-
-            .message-content {
-                max-width: 85%;
-            }
+            .hero-stats { justify-content: center; gap: 1.5rem; }
+            .section-title { font-size: 2.5rem; }
+            .message-content { max-width: 85%; }
         }
 
         @media (max-width: 576px) {
-            .navbar-brand span {
-                font-size: 1.3rem;
-            }
-
-            .hero-section {
-                padding: 100px 0 60px;
-            }
-
-            .features-section,
-            .roles-section,
-            .cta-section,
-            .ai-assistant-section {
-                padding: 60px 0;
-            }
-
-            .assistant-header h3 {
-                font-size: 1.4rem;
-            }
-
-            .assistant-body {
-                padding: 1.5rem;
-            }
+            .hero-section { padding: 100px 0 60px; }
+            .features-section, .roles-section, .cta-section, .ai-assistant-section { padding: 60px 0; }
         }
     </style>
 </head>
 
 <body>
-<!-- FONDO ANIMADO -->
+
 <div class="background-animation"></div>
 <div class="floating-shapes">
     <div class="shape"></div>
@@ -934,7 +794,7 @@
     <div class="shape"></div>
 </div>
 
-<!-- NAVBAR -->
+<!-- NAVBAR - CON INICIAR SESIÓN (NO CERRAR SESIÓN) -->
 <nav class="navbar navbar-expand-lg" id="navbar">
     <div class="container">
         <a class="navbar-brand" href="#inicio">
@@ -951,8 +811,8 @@
                 <li class="nav-item"><a class="nav-link" data-section="asistente">Asistente IA</a></li>
             </ul>
             <div class="d-flex">
-                <a href="/logout" class="btn btn-login">
-                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                <a href="/login" class="btn btn-login">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
                 </a>
             </div>
         </div>
@@ -971,6 +831,14 @@
                         <div class="stat-item"><span class="stat-number">99.9%</span><span class="stat-label">Precisión</span></div>
                         <div class="stat-item"><span class="stat-number">3s</span><span class="stat-label">Registro</span></div>
                         <div class="stat-item"><span class="stat-number">24/7</span><span class="stat-label">Disponible</span></div>
+                    </div>
+                    <div class="hero-buttons fade-in-up stagger-delay-3">
+                        <a href="/login" class="btn btn-hero-primary me-3 mb-3">
+                            <i class="bi bi-rocket-takeoff me-2"></i>Comenzar Ahora
+                        </a>
+                        <a href="#caracteristicas" class="btn btn-hero-secondary mb-3">
+                            <i class="bi bi-play-circle me-2"></i>Ver Demo
+                        </a>
                     </div>
                 </div>
             </div>
@@ -1028,21 +896,21 @@
                 <div class="role-card fade-in-up stagger-delay-1">
                     <div class="role-icon"><i class="bi bi-mortarboard"></i></div>
                     <h3 class="role-title">Estudiante</h3>
-                    <p>Marca tu asistencia instantáneamente con tu smartphone.</p>
+                    <p class="role-description">Marca tu asistencia instantáneamente con tu smartphone.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="role-card fade-in-up stagger-delay-2">
                     <div class="role-icon"><i class="bi bi-person-badge"></i></div>
                     <h3 class="role-title">Docente</h3>
-                    <p>Genera códigos QR dinámicos y controla asistencia en tiempo real.</p>
+                    <p class="role-description">Genera códigos QR dinámicos y controla asistencia en tiempo real.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="role-card fade-in-up stagger-delay-3">
                     <div class="role-icon"><i class="bi bi-clipboard-data"></i></div>
                     <h3 class="role-title">Administrador</h3>
-                    <p>Gestión centralizada y reportes ejecutivos avanzados.</p>
+                    <p class="role-description">Gestión centralizada y reportes ejecutivos avanzados.</p>
                 </div>
             </div>
         </div>
@@ -1087,16 +955,17 @@
     <div class="container">
         <h2 class="cta-title fade-in-up">¿Listo para Transformar tu Institución?</h2>
         <p class="cta-subtitle fade-in-up stagger-delay-1">Únete a cientos de instituciones que ya optimizaron su gestión</p>
+        <a href="/login" class="btn btn-cta fade-in-up stagger-delay-2">
+            <i class="bi bi-rocket-takeoff me-2"></i>Comenzar Gratis
+        </a>
     </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
     <div class="container">
-        <div class="footer-content">
-            <div class="footer-logo">AsistControl</div>
-            <p class="footer-text">Sistema Inteligente de Gestión de Asistencia Educativa</p>
-        </div>
+        <div class="footer-logo">AsistControl</div>
+        <div class="footer-text">Sistema Inteligente de Gestión de Asistencia Educativa</div>
         <div class="footer-bottom"><p>&copy; 2025 AsistControl. Todos los derechos reservados.</p></div>
     </div>
 </footer>
@@ -1119,17 +988,12 @@
 
         if (!message || isLoading) return;
 
-        // Ocultar empty state si existe
         if (emptyState) emptyState.style.display = "none";
 
-        // Agregar mensaje del usuario
         addMessage(message, true);
-
-        // Limpiar input
         userInput.value = "";
         userInput.style.height = "auto";
 
-        // Mostrar typing
         isLoading = true;
         if (typingIndicator) typingIndicator.style.display = "block";
         scrollToBottom();
@@ -1147,10 +1011,8 @@
 
             const data = await response.json();
 
-            // Ocultar typing
             if (typingIndicator) typingIndicator.style.display = "none";
 
-            // Agregar respuesta del bot
             if (data.response) {
                 addMessage(data.response, false);
             } else {
@@ -1160,7 +1022,7 @@
         } catch (error) {
             console.error("Error:", error);
             if (typingIndicator) typingIndicator.style.display = "none";
-            addMessage("❌ Error al conectar con el servidor. Verifica que el backend esté corriendo.", false);
+            addMessage("❌ Error al conectar con el servidor.", false);
         }
 
         isLoading = false;
@@ -1170,7 +1032,6 @@
         const div = document.createElement("div");
         div.className = `message ${isUser ? "user" : "bot"}`;
 
-        // Escapar HTML y preservar saltos de línea
         const escapedText = text
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -1205,7 +1066,6 @@
             this.style.height = Math.min(this.scrollHeight, 100) + "px";
         });
 
-        // Enviar con Enter (Shift+Enter para nueva línea)
         userInput.addEventListener("keydown", function(e) {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -1214,26 +1074,24 @@
         });
     }
 
-    // ========== NAVBAR Y ANIMACIONES ==========
+    // ========== NAVBAR SCROLL ==========
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', function() {
         if (window.scrollY > 100) navbar.classList.add('navbar-scrolled');
         else navbar.classList.remove('navbar-scrolled');
     });
 
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    // ========== ANIMACIONES ==========
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, observerOptions);
+    }, { threshold: 0.1 });
+
     document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
+    // ========== NAVEGACIÓN SUAVE ==========
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const navbarCollapse = document.getElementById('navbarContent');
-            if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                new bootstrap.Collapse(navbarCollapse).toggle();
-            }
             const sectionId = this.getAttribute('data-section');
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
@@ -1243,13 +1101,6 @@
                 window.scrollTo({ top: offsetTop, behavior: 'smooth' });
             }
         });
-    });
-
-    document.querySelectorAll('.feature-card, .role-card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = this.classList.contains('feature-card') ? 'translateY(-15px) scale(1.02)' : 'translateY(-10px)';
-        });
-        card.addEventListener('mouseleave', function() { this.style.transform = 'translateY(0) scale(1)'; });
     });
 
     console.log("✅ Asistente IA inicializado correctamente");

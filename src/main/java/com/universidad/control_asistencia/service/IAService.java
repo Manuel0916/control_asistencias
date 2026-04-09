@@ -1,17 +1,25 @@
 package com.universidad.control_asistencia.service;
 
-import org.springframework.ai.ollama.OllamaChatClient;
+
+import org.springframework.ai.chat.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IAService {
 
-    private final OllamaChatClient chatClient;
+    private final ChatClient chatClient;
     private final String mensajeNegacion;
 
+    private static final String SYSTEM_PROMPT = """
+            Eres un asistente virtual del sistema de control de asistencia de una universidad llamada "AsistControl".
+            Solo respondes preguntas sobre: registro de asistencia, consulta de asistencias, horarios, materias, reportes.
+            Si te preguntan algo fuera de esto, responde: "Lo siento, solo puedo ayudarte con el sistema de control de asistencia."
+            Responde de forma clara, breve y útil.
+            """;
+
     public IAService(
-            OllamaChatClient chatClient,
+            ChatClient chatClient,
             @Value("${app.ai.negacion}") String mensajeNegacion
     ) {
         this.chatClient = chatClient;
@@ -24,19 +32,22 @@ public class IAService {
                 return "Por favor, escribe un mensaje válido.";
             }
 
-            String mensajeLimpio = mensaje.strip().replaceAll("\\s+", " ");
+            // Enviar el system prompt junto con el mensaje del usuario
+            String mensajeCompleto = SYSTEM_PROMPT + "\n\nUsuario: " + mensaje.strip().replaceAll("\\s+", " ") + "\n\nAsistente:";
 
-            String respuesta = chatClient.call(mensajeLimpio);
+            String respuesta = chatClient
+                    .prompt()
+                    .user(mensajeCompleto)
+                    .call()
+                    .content();
 
-            if (respuesta == null || respuesta.isBlank()) {
-                return mensajeNegacion;
-            }
-
-            return respuesta;
+            return (respuesta == null || respuesta.isBlank())
+                    ? mensajeNegacion
+                    : respuesta;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "❌ Error al conectar con la IA local (Ollama). Verifica que Ollama esté corriendo en http://localhost:11434";
+            return "❌ Error al conectar con la IA local. Verifica que Ollama esté corriendo en http://localhost:11434";
         }
     }
 }
