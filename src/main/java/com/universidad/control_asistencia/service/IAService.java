@@ -26,28 +26,5 @@ public class IAService {
         this.mensajeNegacion = mensajeNegacion;
     }
 
-    public String preguntar(String mensaje) {
-        try {
-            if (mensaje == null || mensaje.isBlank()) {
-                return "Por favor, escribe un mensaje válido.";
-            }
 
-            // Enviar el system prompt junto con el mensaje del usuario
-            String mensajeCompleto = SYSTEM_PROMPT + "\n\nUsuario: " + mensaje.strip().replaceAll("\\s+", " ") + "\n\nAsistente:";
-
-            String respuesta = chatClient
-                    .prompt()
-                    .user(mensajeCompleto)
-                    .call()
-                    .content();
-
-            return (respuesta == null || respuesta.isBlank())
-                    ? mensajeNegacion
-                    : respuesta;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "❌ Error al conectar con la IA local. Verifica que Ollama esté corriendo en http://localhost:11434";
-        }
-    }
 }

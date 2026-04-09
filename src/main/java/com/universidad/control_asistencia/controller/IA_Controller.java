@@ -25,8 +25,8 @@ public class IA_Controller {
                     .body(Map.of("response", "❌ El mensaje no puede estar vacío"));
         }
 
-        String respuesta = iaService.preguntar(mensaje);
 
-        return ResponseEntity.ok(Map.of("response", respuesta));
+
+        return ResponseEntity.ok(Map.of("response", "hola"));
     }
 }
