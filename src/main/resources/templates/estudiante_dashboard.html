@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Panel Estudiante - AsistControl</title>
 
     <!-- Bootstrap -->
@@ -597,7 +599,7 @@
         AppState.currentSection = sectionId;
     }
 
-    // ✅ ENDPOINT CORREGIDO: Obtener usuario actual desde /api/usuario-actual
+    //  Obtener usuario actual desde /api/usuario-actual
     async function loadUserData() {
         try {
             const response = await fetch('/api/usuario-actual');
@@ -701,47 +703,76 @@
 
     // ✅ ENDPOINT CORRECTO: Registrar asistencia
     async function registerAttendance(className, statusElement) {
-        const attendanceData = {
-            clase: className,
-            estado: "Presente"
-        };
 
-        try {
-            const response = await fetch('/api/asistencias', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(attendanceData)
-            });
+    const attendanceData = {
+        clase: className,
+        estado: "Presente"
+    };
 
-            if (response.ok) {
-                statusElement.className = 'status-message status-success';
-                statusElement.innerHTML = `<i class="bi bi-check-circle me-2"></i>Asistencia registrada en ${className}`;
+    try {
 
-                loadHistorial();
+        // ✅ TOKEN CSRF
+        const token = document.querySelector('meta[name="_csrf"]').content;
+        const header = document.querySelector('meta[name="_csrf_header"]').content;
 
-                setTimeout(() => {
-                    if (AppState.scanner) {
-                        AppState.scanner.clear().then(() => {
+        const response = await fetch('/api/asistencias', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [header]: token
+            },
+            body: JSON.stringify(attendanceData)
+        });
+
+        if (response.ok) {
+
+            statusElement.className = 'status-message status-success';
+            statusElement.innerHTML =
+                `<i class="bi bi-check-circle me-2"></i>Asistencia registrada en ${className}`;
+
+            loadHistorial();
+
+            setTimeout(() => {
+
+                if (AppState.scanner) {
+
+                    AppState.scanner.clear()
+                        .then(() => {
                             AppState.isScannerActive = false;
                             initializeScanner();
-                        }).catch(() => {
+                        })
+                        .catch(() => {
                             AppState.isScannerActive = false;
                             initializeScanner();
                         });
-                    }
-                }, 1500);
+                }
 
-            } else {
-                throw new Error('Error del servidor');
+            }, 1500);
+
+        } else {
+
+            let errorText = 'Error del servidor';
+
+            try {
+                const errorData = await response.json();
+                errorText = errorData.error || errorText;
+            } catch (e) {
+                errorText = response.statusText;
             }
-        } catch (error) {
-            console.error('Attendance error:', error);
-            statusElement.className = 'status-message status-error';
-            statusElement.innerHTML = '<i class="bi bi-x-circle me-2"></i>Error al registrar asistencia';
+
+            throw new Error(errorText);
         }
+
+    } catch (error) {
+
+        console.error('Attendance error:', error);
+
+        statusElement.className = 'status-message status-error';
+
+        statusElement.innerHTML =
+            `<i class="bi bi-x-circle me-2"></i>Error al registrar asistencia: ${error.message}`;
     }
+}
 
     // ✅ ENDPOINT CORRECTO: Cargar historial por nombre
     async function loadHistorial() {
@@ -898,7 +929,7 @@
                 AppState.scanner.clear().catch(() => {});
             }
             AppState.isScannerActive = false;
-            window.location.href = '/logout';
+            window.location.href = '/';
         }
     }
 

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Dashboard Docente - AsistControl</title>
 
     <!-- Bootstrap -->
@@ -656,7 +658,7 @@
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
                 if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                    window.location.href = "/logout";
+                    window.location.href = "/";
                 }
             });
         }
@@ -776,49 +778,66 @@
         });
     }
 
-    async function handleRegistroSubmit(e) {
-        e.preventDefault();
+   async function handleRegistroSubmit(e) {
+    e.preventDefault();
 
-        const nombre = document.getElementById('nombre-alumno').value.trim();
-        const clase = document.getElementById('clase-select').value;
-        const estado = document.getElementById('estado-asistencia').value;
-        const fecha = document.getElementById('fecha-asistencia').value;
+    const nombre = document.getElementById('nombre-alumno').value.trim();
+    const clase = document.getElementById('clase-select').value;
+    const estado = document.getElementById('estado-asistencia').value;
+    const fecha = document.getElementById('fecha-asistencia').value;
 
-        if (!nombre || !clase || !estado) {
-            showAlert('Por favor completa todos los campos', 'error');
-            return;
-        }
-
-        const asistencia = {
-            nombre,
-            clase,
-            estado,
-            fechaHora: new Date(fecha).toISOString()
-        };
-
-        try {
-            const response = await fetch('/api/asistencias/manual', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(asistencia)
-            });
-
-            if (response.ok) {
-                showAlert('Asistencia registrada correctamente', 'success');
-                e.target.reset();
-                setDefaultDateTime();
-                await loadAsistencias();
-            } else {
-                const error = await response.json();
-                throw new Error(error.error || 'Error en el servidor');
-            }
-        } catch (error) {
-            console.error('Error registrando asistencia:', error);
-            showAlert('Error al registrar la asistencia: ' + error.message, 'error');
-        }
+    if (!nombre || !clase || !estado) {
+        showAlert('Por favor completa todos los campos', 'error');
+        return;
     }
+
+    const asistencia = {
+        nombre,
+        clase,
+        estado,
+        fechaHora: new Date(fecha).toISOString()
+    };
+
+    try {
+
+        // ✅ TOKEN CSRF PARA SPRING SECURITY
+        const token = document.querySelector('meta[name="_csrf"]').content;
+        const header = document.querySelector('meta[name="_csrf_header"]').content;
+
+        const response = await fetch('/api/asistencias/manual', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [header]: token
+            },
+            body: JSON.stringify(asistencia)
+        });
+
+        if (response.ok) {
+            showAlert('Asistencia registrada correctamente', 'success');
+            e.target.reset();
+            setDefaultDateTime();
+            await loadAsistencias();
+        } else {
+
+            let errorMessage = 'Error en el servidor';
+
+            try {
+                const error = await response.json();
+                errorMessage = error.error || errorMessage;
+            } catch (err) {
+                errorMessage = response.statusText;
+            }
+
+            throw new Error(errorMessage);
+        }
+
+    } catch (error) {
+        console.error('Error registrando asistencia:', error);
+        showAlert('Error al registrar la asistencia: ' + error.message, 'error');
+    }
+}
+
 
     async function deleteAsistencia(id) {
         if (!confirm('¿Estás seguro de eliminar este registro?')) return;

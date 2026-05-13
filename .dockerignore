@@ -1,0 +1,13 @@
+# ---------------------------
+# Control de versiones
+# ---------------------------
+.git/
+.gitignore
+
+# ---------------------------
+# Docker y Compose
+# ---------------------------
+Dockerfile
+Dockerfile*
+docker-compose*
+compose.y*ml
