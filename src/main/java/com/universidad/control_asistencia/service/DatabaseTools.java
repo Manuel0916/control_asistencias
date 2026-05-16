@@ -17,7 +17,7 @@ public class DatabaseTools {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // Definimos un registro (record) para que la IA pase el SQL correctamente
+    //  aca Definimos un registro (record) para que la IA pase el SQL correctamente
     public record SqlRequest(String sql) {}
 
     @Tool(description = "Ejecuta consultas SQL SELECT en la base de datos control_asistencia para ver alumnos y asistencias.")
