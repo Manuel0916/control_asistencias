@@ -1,7 +1,6 @@
 package com.universidad.control_asistencia.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +11,12 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class IA_Controller {
 
+    // Inyectamos el ChatClient que ya viene configurado desde IAConfig
+    // con el system prompt completo y las herramientas MCP conectadas
     private final ChatClient chatClient;
 
-    // Cambiamos IAService por ToolCallbackProvider para usar MCP/Docker
-    public IA_Controller(ChatClient.Builder chatClientBuilder, ToolCallbackProvider toolCallbackProvider) {
-        this.chatClient = chatClientBuilder
-                .defaultToolCallbacks(toolCallbackProvider)
-                .build();
+    public IA_Controller(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
     @PostMapping("/chat")
@@ -28,11 +26,10 @@ public class IA_Controller {
 
         if (mensaje == null || mensaje.isBlank()) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("response", "❌ Por favor, escribe una pregunta."));
+                    .body(Map.of("response", "❌ Por favor, escribe una pregunta o instrucción."));
         }
 
         try {
-            // Aquí la IA usa automáticamente los servidores definidos en mcp-servers.json
             String respuesta = chatClient.prompt()
                     .user(mensaje)
                     .call()
@@ -43,7 +40,7 @@ public class IA_Controller {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError()
-                    .body(Map.of("response", "⚠️ Error en el sistema MCP: " + e.getMessage()));
+                    .body(Map.of("response", "⚠️ Error en el sistema: " + e.getMessage()));
         }
     }
 }
