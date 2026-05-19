@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,10 +30,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
+        // FIX: usar CookieCsrfTokenRepository para evitar el error
+        // "Cannot create a session after the response has been committed"
+        // que ocurría porque HttpSessionCsrfTokenRepository intentaba crear
+        // sesión después de que la respuesta ya había sido enviada.
+        CookieCsrfTokenRepository csrfRepo = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
 
-                // DESACTIVAR CSRF PARA APIs
+        http
+                // CSRF con cookies en lugar de sesión
                 .csrf(csrf -> csrf
+                        .csrfTokenRepository(csrfRepo)
+                        .csrfTokenRequestHandler(requestHandler)
                         .ignoringRequestMatchers(
                                 "/ia/chat",
                                 "/ia/**",
@@ -50,7 +60,10 @@ public class SecurityConfig {
                                 "/forgot-password",
                                 "/css/**",
                                 "/js/**",
-                                "/img/**"
+                                "/img/**",
+                                "/imagenes/**",   // FIX: archivos en static/imagenes
+                                "/static/**",     // FIX: todo lo que esté en static
+                                "/webjars/**"
                         ).permitAll()
 
                         // IA

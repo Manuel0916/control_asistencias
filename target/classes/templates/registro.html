@@ -578,11 +578,16 @@
 
                 console.log('Enviando datos al AuthController:', formData);
 
-                // ✅ AHORA USA EL ENDPOINT CORRECTO DEL AUTHCONTROLLER
+                // Leer token CSRF de la cookie (CookieCsrfTokenRepository)
+                const csrfToken = document.cookie.split('; ')
+                    .find(row => row.startsWith('XSRF-TOKEN='))
+                    ?.split('=')[1] || '';
+
                 const response = await fetch('/registro', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-XSRF-TOKEN': decodeURIComponent(csrfToken)
                     },
                     body: new URLSearchParams(formData).toString()
                 });

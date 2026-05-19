@@ -103,18 +103,18 @@ public class AuthController {
 
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {
-        return "forgot-password";
+        return "redirect:/login";
     }
 
     @PostMapping("/forgot-password")
     public String recuperarPassword(@RequestParam String email, Model model) {
         if (!usuarioRepository.existsByEmail(email)) {
             model.addAttribute("error", "No se encontró un usuario con ese correo.");
-            return "forgot-password";
+            return "redirect:/login";
         }
 
         model.addAttribute("success", "Si el correo es válido, recibirás instrucciones para restablecer tu contraseña.");
-        return "forgot-password";
+        return "redirect:/login";
     }
 
     /**
